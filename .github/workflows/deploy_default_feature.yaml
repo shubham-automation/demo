@@ -1,4 +1,4 @@
-name: Deploy Default Feature to EKS
+name: Deploy Default Feature for Customers
 on:
   #push:
   #  branches: [ main ]
