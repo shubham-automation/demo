@@ -1,8 +1,6 @@
-name: Deploy to EKS
+name: Deploy to New Feature to EKS
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch: # Allows manual trigger for rollback
+  workflow_dispatch: # Manual trigger for rollback 
 permissions:
   actions: write # Ensure permission to upload artifacts
   contents: read
