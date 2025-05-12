@@ -1,6 +1,9 @@
 name: Rollback to Default Feature
 on:
   workflow_dispatch: # Manual trigger for rollback
+permissions:
+  actions: read # Ensure permission to download artifacts
+  contents: read
 jobs:
   rollback:
     runs-on: ubuntu-latest
@@ -12,9 +15,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: image-tags
+        continue-on-error: true # Proceed even if artifact download fails
+
+      - name: Verify Artifact Download
+        run: |
+          if [ -f "previous_image_tag.txt" ]; then
+            echo "Artifact downloaded successfully. Contents:"
+            cat previous_image_tag.txt
+          else
+            echo "Error: Artifact 'image-tags' not found or download failed"
+            echo "Possible causes:"
+            echo "- Deploy workflow failed to upload artifact"
+            echo "- Artifact expired (retention period: 7 days)"
+            echo "- Incompatible artifact version"
+            exit 1
+          fi
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -22,7 +40,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Deploy Previous Version to EKS
         env:
@@ -30,7 +48,11 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
-          PREVIOUS_IMAGE_TAG=$(cat previous_image_tag.txt | head -n 1)
+          PREVIOUS_IMAGE_TAG=$(head -n 1 previous_image_tag.txt)
+          if [ -z "$PREVIOUS_IMAGE_TAG" ]; then
+            echo "Error: No previous image tag found in previous_image_tag.txt"
+            exit 1
+          fi
           mkdir -p ~/.kube
           echo $KUBE_CONFIG_DATA | base64 -d > ~/.kube/config
           sed -i "s|<ECR_REGISTRY>/<ECR_REPOSITORY>:<IMAGE_TAG>|$ECR_REGISTRY/$ECR_REPOSITORY:$PREVIOUS_IMAGE_TAG|g" k8s/deployment.yaml
