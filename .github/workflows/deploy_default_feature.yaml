@@ -36,7 +36,7 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           # Create or update previous_image_tag.txt
-          echo "PREVIOUS_IMAGE_TAG=$(cat previous_image_tag.txt 2>/dev/null || echo 'latest')" > previous_image_tag.txt
+          #echo "PREVIOUS_IMAGE_TAG=$(cat previous_image_tag.txt 2>/dev/null || echo 'latest')" > previous_image_tag.txt
           echo $IMAGE_TAG >> previous_image_tag.txt
 
       - name: Debug Image Tag File
