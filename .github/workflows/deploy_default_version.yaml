@@ -53,8 +53,6 @@ jobs:
           mkdir -p ~/.kube
           echo $KUBE_CONFIG_DATA | base64 -d > ~/.kube/config
           sed -i "s|<ECR_REGISTRY>/<ECR_REPOSITORY>:<IMAGE_TAG>|$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" k8s/deployment.yaml
-          # Enable feature toggle for Customer B (set to true for new feature)
-          #sed -i 's/value: "false"/value: "true"/g' k8s/deployment.yaml
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
           kubectl rollout status deployment/eks-app
