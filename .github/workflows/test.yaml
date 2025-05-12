@@ -17,4 +17,4 @@ jobs:
           path: downloaded-artifact
 
       - name: 'Unzip artifact'
-        run: ls -lrt
+        run: ls -lrt downloaded-artifact
