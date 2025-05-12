@@ -10,7 +10,7 @@ on:
           - deploy_default_feature
           - rollback_to_default_feature
           - deploy_new_feature
-permissions:
+permissions: # permission to upload artifacts
   actions: write
   contents: read
 jobs:
