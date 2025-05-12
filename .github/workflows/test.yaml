@@ -1,20 +1,40 @@
-name: Use the data
+# name: Use the data
 
+# on:
+#   #push:
+#   #  branches: [ main ]
+#   workflow_dispatch: # Manual trigger for rollback 
+
+# jobs:
+#   download:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: 'Download artifact from latest build'
+#         uses: dawidd6/action-download-artifact@v6
+#         with:
+#           workflow: deploy_default_feature.yaml
+#           name: image-tags
+#           path: downloaded-artifact
+
+#       - name: 'Unzip artifact'
+#         run: cat downloaded-artifact/previous_image_tag.txt
+
+
+name: Dropdown Example Workflow
 on:
-  #push:
-  #  branches: [ main ]
-  workflow_dispatch: # Manual trigger for rollback 
-
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
 jobs:
-  download:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Download artifact from latest build'
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: deploy_default_feature.yaml
-          name: image-tags
-          path: downloaded-artifact
-
-      - name: 'Unzip artifact'
-        run: cat downloaded-artifact/previous_image_tag.txt
+      - name: Print selected environment
+        run: echo "Deploying to ${{ github.event.inputs.environment }} environment"
