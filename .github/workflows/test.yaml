@@ -17,4 +17,4 @@ jobs:
           path: downloaded-artifact
 
       - name: 'Unzip artifact'
-        run: unzip downloaded-artifact/image-tags.zip
+        run: ls -lrt
