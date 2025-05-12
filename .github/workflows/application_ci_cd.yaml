@@ -11,7 +11,7 @@ on:
           - rollback_to_default_feature
           - deploy_new_feature
 permissions:
-  actions: write # permission to upload artifacts
+  actions: write
   contents: read
 jobs:
   deploy:
