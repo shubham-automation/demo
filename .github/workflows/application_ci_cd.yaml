@@ -51,6 +51,7 @@ jobs:
           #echo "PREVIOUS_IMAGE_TAG=$(cat previous_image_tag.txt 2>/dev/null || echo 'latest')" > previous_image_tag.txt
           if [ "${{ github.event.inputs.operation }}" == "deploy_default_feature" ]; then
             echo $IMAGE_TAG >> previous_image_tag.txt
+          fi
 
       - name: Debug Image Tag File
         if: ${{ github.event.inputs.operation == 'deploy_default_feature' }}
