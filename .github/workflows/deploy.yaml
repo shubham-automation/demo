@@ -3,15 +3,18 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch: # Allows manual trigger for rollback
+permissions:
+  actions: write # Ensure permission to upload artifacts
+  contents: read
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -19,7 +22,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set Image Tag
         id: set-image-tag
@@ -32,8 +35,14 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          # Create or update previous_image_tag.txt
           echo "PREVIOUS_IMAGE_TAG=$(cat previous_image_tag.txt 2>/dev/null || echo 'latest')" > previous_image_tag.txt
-          echo $IMAGE_TAG > previous_image_tag.txt
+          echo $IMAGE_TAG >> previous_image_tag.txt
+
+      - name: Debug Image Tag File
+        run: |
+          echo "Contents of previous_image_tag.txt:"
+          cat previous_image_tag.txt || echo "File not found"
 
       - name: Deploy to EKS
         env:
@@ -51,7 +60,8 @@ jobs:
           kubectl rollout status deployment/eks-app
 
       - name: Store Image Tag for Rollback
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: image-tags
           path: previous_image_tag.txt
+          retention-days: 7 # Retain artifact for 7 days
