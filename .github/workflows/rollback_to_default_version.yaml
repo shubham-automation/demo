@@ -1,8 +1,8 @@
 name: Rollback to Default Feature
 on:
-  workflow_dispatch: # Manual trigger for rollback
+  workflow_dispatch:
 permissions:
-  actions: read # Ensure permission to download artifacts
+  actions: read # permission to download artifacts
   contents: read
 jobs:
   rollback:

@@ -5,9 +5,9 @@ const port = 3000;
 // Feature toggle: Set via environment variable
 const enableCustomerBFeature = process.env.ENABLE_CUSTOMER_B_FEATURE === 'true';
 
-// Middleware to identify customer (simplified for demo, e.g., via query param)
+// Middleware to identify customer with queryparam
 app.use((req, res, next) => {
-  req.customer = req.query.customer || 'A'; // Default to Customer A
+  req.customer = req.query.customer || 'A';
   next();
 });
 

@@ -1,8 +1,8 @@
 name: Deploy New Feature to Customers
 on:
-  workflow_dispatch: # Manual trigger for rollback 
+  workflow_dispatch:
 permissions:
-  actions: write # Ensure permission to upload artifacts
+  actions: write
   contents: read
 jobs:
   deploy:
