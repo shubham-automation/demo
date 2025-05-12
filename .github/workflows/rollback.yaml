@@ -1,0 +1,41 @@
+name: Rollback to Previous Deployment
+on:
+  workflow_dispatch: # Manual trigger for rollback
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Previous Image Tag
+        uses: actions/download-artifact@v3
+        with:
+          name: image-tags
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Deploy Previous Version to EKS
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        run: |
+          PREVIOUS_IMAGE_TAG=$(cat previous_image_tag.txt | head -n 1)
+          mkdir -p ~/.kube
+          echo $KUBE_CONFIG_DATA | base64 -d > ~/.kube/config
+          sed -i "s|<ECR_REGISTRY>/<ECR_REPOSITORY>:<IMAGE_TAG>|$ECR_REGISTRY/$ECR_REPOSITORY:$PREVIOUS_IMAGE_TAG|g" k8s/deployment.yaml
+          # Disable feature toggle for rollback
+          sed -i 's/value: "true"/value: "false"/g' k8s/deployment.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl rollout status deployment/eks-app
