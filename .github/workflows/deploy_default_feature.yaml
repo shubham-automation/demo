@@ -29,7 +29,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        if: if: ${{ github.event.inputs.operation == 'deploy_default_feature' || github.event.inputs.operation == 'rollback_to_default_feature' }}
+        if: ${{ github.event.inputs.operation == 'deploy_default_feature' || github.event.inputs.operation == 'rollback_to_default_feature' }}
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
