@@ -10,31 +10,11 @@ jobs:
   download:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Download artifact'
-        uses: actions/github-script@v6
+      - name: 'Download artifact from latest build'
+        uses: dawidd6/action-download-artifact@v6
         with:
-          script: |
-            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: context.payload.workflow_run.id,
-            });
-            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "pr_number"
-            })[0];
-            let download = await github.rest.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            const fs = require('fs');
-            const path = require('path');
-            const temp = '${{ runner.temp }}/artifacts';
-            if (!fs.existsSync(temp)){
-              fs.mkdirSync(temp);
-            }
-            fs.writeFileSync(path.join(temp, 'pr_number.zip'), Buffer.from(download.data));
+          name: image-tags
+          path: downloaded-artifact
 
       - name: 'Unzip artifact'
-        run: unzip image-tags.zip -d "${{ runner.temp }}/artifacts"
+        run: unzip downloaded-artifact/image-tags.zip
