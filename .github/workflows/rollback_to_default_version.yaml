@@ -15,13 +15,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: image-tags
-        continue-on-error: true # Proceed even if artifact download fails
+          path: downloaded-artifact
+        #continue-on-error: true # Proceed even if artifact download fails
 
       - name: Verify Artifact Download
         run: |
-          if [ -f "previous_image_tag.txt" ]; then
+          if [ -f "downloaded-artifact/previous_image_tag.txt" ]; then
             echo "Artifact downloaded successfully. Contents:"
-            cat previous_image_tag.txt
+            cat downloaded-artifact/previous_image_tag.txt
           else
             echo "Error: Artifact 'image-tags' not found or download failed"
             echo "Possible causes:"
@@ -48,7 +49,7 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
-          PREVIOUS_IMAGE_TAG=$(head -n 1 previous_image_tag.txt)
+          PREVIOUS_IMAGE_TAG=$(head -n 1 downloaded-artifact/previous_image_tag.txt)
           if [ -z "$PREVIOUS_IMAGE_TAG" ]; then
             echo "Error: No previous image tag found in previous_image_tag.txt"
             exit 1
