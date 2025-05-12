@@ -1,4 +1,4 @@
-name: Rollback to Previous Deployment
+name: Rollback to Default Feature
 on:
   workflow_dispatch: # Manual trigger for rollback
 jobs:
@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Previous Image Tag
         uses: actions/download-artifact@v3
