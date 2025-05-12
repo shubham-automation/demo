@@ -11,12 +11,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Previous Image Tag
-        uses: actions/download-artifact@v4
+      # - name: Download Previous Image Tag
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: image-tags
+      #     path: downloaded-artifact
+      #   continue-on-error: true
+
+      - name: 'Download artifact from latest build'
+        uses: dawidd6/action-download-artifact@v6
         with:
+          workflow: deploy_default_feature.yaml
           name: image-tags
           path: downloaded-artifact
-        #continue-on-error: true # Proceed even if artifact download fails
 
       - name: Verify Artifact Download
         run: |
