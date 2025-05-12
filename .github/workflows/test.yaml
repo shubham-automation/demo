@@ -12,6 +12,7 @@ jobs:
       - name: 'Download artifact from latest build'
         uses: dawidd6/action-download-artifact@v6
         with:
+          workflow: deploy_default_feature.yaml
           name: image-tags
           path: downloaded-artifact
 
