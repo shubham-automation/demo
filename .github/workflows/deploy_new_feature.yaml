@@ -57,9 +57,9 @@ jobs:
           kubectl apply -f k8s/service.yaml
           kubectl rollout status deployment/eks-app
 
-      - name: Store Image Tag for Rollback
-        uses: actions/upload-artifact@v4
-        with:
-          name: image-tags
-          path: previous_image_tag.txt
-          retention-days: 7 # Retain artifact for 7 days
+      # - name: Store Image Tag for Rollback
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: image-tags
+      #     path: previous_image_tag.txt
+      #     retention-days: 7 # Retain artifact for 7 days
