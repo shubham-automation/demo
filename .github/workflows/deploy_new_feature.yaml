@@ -8,6 +8,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Step 1 - Set value
+        run: BRANCH=${{ github.ref_name }}
+
+      - name: Step 2 - Use value
+        run: echo "The variable is ${{ env.BRANCH }}"
+        
       - name: Print branch name
         run: |
           BRANCH=${{ github.ref_name }}
