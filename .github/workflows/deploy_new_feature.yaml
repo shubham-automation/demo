@@ -10,13 +10,13 @@ jobs:
     steps:
       - name: Print branch name
         run: |
-          echo "Current branch: ${{ github.ref_name }}"
           BRANCH=${{ github.ref_name }}
+          echo "Current branch: $BRANCH"
           echo "Current branch (using GITHUB_REF): ${GITHUB_REF##*/}"
 
       - name: branch name
         run: |
-          echo "From above step: ${BRANCH}"
+          echo "From above step: $BRANCH"
           
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
