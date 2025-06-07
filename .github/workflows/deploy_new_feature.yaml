@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Step 1 - Set value
-        run: BRANCH=${{ github.ref_name }}
-
+        run: echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+        
       - name: Step 2 - Use value
         run: echo "The variable is ${{ env.BRANCH }}"
         
