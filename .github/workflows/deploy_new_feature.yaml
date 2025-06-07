@@ -6,10 +6,12 @@ permissions:
   contents: read
 jobs:
   deploy:
-    runs-on: arc-org-runner-set
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Print branch name
+        run: |
+          echo "Current branch: ${{ github.ref_name }}"
+          echo "Current branch (using GITHUB_REF): ${GITHUB_REF##*/}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
