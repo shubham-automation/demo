@@ -16,7 +16,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'qa' && (startsWith(github.ref_name, 'rel/') || startsWith(github.ref_name, 'hotfix/')) && (github.ref_name =~ '^rel/\d+\.\d+\.\d+$' || github.ref_name =~ '^hotfix/\d+\.\d+\.\d+$')
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'qa' && (startsWith(github.ref_name, 'rel/') || startsWith(github.ref_name, 'hotfix/'))
     outputs:
       short_sha: ${{ steps.get_sha.outputs.short_sha }}
     steps:
