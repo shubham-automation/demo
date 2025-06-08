@@ -10,6 +10,9 @@ jobs:
     outputs:
       short_sha: ${{ steps.get_sha.outputs.short_sha }}
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
       - name: Step 1 - Set value
         run: echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
         
