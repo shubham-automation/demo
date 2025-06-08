@@ -13,11 +13,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         
-      - name: Step 1 - Set value
-        run: echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
-        
+      # - name: Step 1 - Set value
+      #   run: echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+      
+      - name: Get branch name
+        id: get_branch
+        run: |
+          echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+          
       - name: Step 2 - Use value
-        run: echo "The variable is ${{ env.BRANCH }}"
+        run: echo "The variable is $BRANCH"
         
       # - name: Get short SHA
       #   id: get_sha
