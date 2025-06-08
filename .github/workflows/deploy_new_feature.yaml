@@ -19,19 +19,23 @@ jobs:
       - name: Step 2 - Use value
         run: echo "The variable is ${{ env.BRANCH }}"
         
-      - name: Get short SHA
-        id: get_sha
-        run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      # - name: Get short SHA
+      #   id: get_sha
+      #   run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Use short SHA
-        run: echo "Short SHA is ${{ steps.get_sha.outputs.short_sha }}"
-        
-      # - name: Step 3 - Set value
-      #   run: echo "GIT_COMMIT=${{ github.sha }}" >> $GITHUB_ENV
+      # - name: Use short SHA
+      #   run: echo "Short SHA is ${{ steps.get_sha.outputs.short_sha }}"
+      - name: Get short commit ID
+        id: get_commit
+        run: |
+          SHORT_COMMIT_ID=$(git rev-parse --short HEAD)
+          echo "SHORT_COMMIT_ID=$SHORT_COMMIT_ID" >> $GITHUB_ENV
 
-      # - name: Step 4 - Use value
-      #   run: echo "The git commit id is ${{ env.GIT_COMMIT:0:7 }}"
-        
+      # Step 3: Use the short commit ID in another step
+      - name: Use short commit ID
+        run: |
+          echo "The short commit ID is: $SHORT_COMMIT_ID"
+          
       - name: Print branch name
         run: |
           BRANCH=${{ github.ref_name }}
